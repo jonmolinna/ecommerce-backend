@@ -1,0 +1,12 @@
+npm install mongoose
+npm install cors
+npm install jsonwebtoken
+npm install bcryptjs
+npm install multer
+npm install cloudinary
+npm install dotenv
+npm install pusher
+npm install graphql
+npm install apollo-server
+
+npm install nodemon -D
