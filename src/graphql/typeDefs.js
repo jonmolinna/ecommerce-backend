@@ -4,6 +4,7 @@ module.exports = gql`
     type Query {
         getUser(userId: ID!): User
         getAllCategory: [Category]
+        getAllTallas: [Talla]
         getAllProducts: [Product]
     }
 
@@ -13,6 +14,11 @@ module.exports = gql`
         updatedUser(id: ID!, input: UpdatedUserInput): User
         addCategory(category: String!): Category!
         updatedCategory(id: ID!, category: String!): Category!
+        deleteCategory(id: ID!): Boolean!
+        addTalla(talla: String!): Talla!
+        updatedTalla(id: ID!, talla: String!): Talla!
+        deletedTalla(id: ID!): Boolean!
+        addProduct(input: AddProductInput!): Product!
     }
 
     type User {
@@ -28,6 +34,48 @@ module.exports = gql`
         updatedAt: String!,
         token: String,
     }
+
+    type Category {
+        id: ID!,
+        category: String!
+        createdAt: String!,
+        updatedAt: String!,
+    }
+
+    type Talla {
+        id: ID!,
+        talla: String!
+        createdAt: String!,
+        updatedAt: String!,
+    }
+
+    type Medida {
+        talla: Talla
+        stock: Int!
+        createdAt: String,
+    }
+
+    type Product {
+        id: ID!
+        codigo: String!,
+        marca: String!,
+        descr: String!,
+        precio: Float!,
+        material: String!,
+        color: String!,
+        urlImage: String!,
+        genero: String!
+        detalles: [Detalle],
+        category: Category,
+        medida: [Medida],
+        createdAt: String!
+    }
+
+    type Detalle {
+        id: ID!
+        detalle: String
+    }
+
 
     input AddUserInput {
         nombre: String!
@@ -47,15 +95,21 @@ module.exports = gql`
         genero: String,
     }
 
-    type Category {
-        id: ID!,
-        category: String!
-        createdAt: String!,
-        updatedAt: String!,
+    input AddProductInput {
+        codigo: String!,
+        marca: String!,
+        descr: String!,
+        precio: Float!,
+        material: String!,
+        color: String!,
+        urlImage: String!,
+        genero: String!,
+        detalles: [AddDetalle],
+        categoryId: String
     }
 
-    type Product {
-        id: ID!
-        body: String
+    input AddDetalle {
+        detalle: String
     }
+    
 `;

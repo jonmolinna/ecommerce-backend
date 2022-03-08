@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../../models/User');
 const { generateToken } = require('../../util/generateToken');
-const { validateRegisterUser, validateLoginUser } = require('../../util/validatorsUser');
+const { validateRegisterUser, validateLoginUser, validateUpdatedUser } = require('../../util/validatorsUser');
 
 module.exports = {
     Mutation: {
@@ -73,31 +73,30 @@ module.exports = {
             };
         },
 
-        async updatedUser(parent, { id, input }, context) {
-            try {
-                const user = await User.findById(id);
-                if (!user) throw new Error('Usuario no existe.');
+        async updatedUser(parent, { id, input: {nombre, apellido, dni, telefono, fech_nacimiento, genero } }, context) {
+            const { errors, valid } = validateUpdatedUser(nombre, apellido, dni, telefono, fech_nacimiento, genero);
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
+            };
 
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: id},
-                    {
-                        nombre: input.nombre || user.nombre,
-                        apellido: input.apellido || user.apellido,
-                        email: input.email || user.email,
-                        dni: input.dni || user.dni,
-                        telefono: input.telefono || user.telefono,
-                        fech_nacimiento: input.fech_nacimiento || user.fech_nacimiento,
-                        genero: input.genero || user.genero,
-                        updatedAt: new Date().toISOString(),
-                    },
-                    { new: true, runValidators: true }
-                );
+            const user = await User.findById(id);
+            if (!user) throw new Error('Usuario no existe.');
 
-                return updatedUser;
-                
-            } catch (err) {
-                throw new Error(err)
-            }
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: id},
+                {
+                    nombre: nombre || user.nombre,
+                    apellido: apellido || user.apellido,
+                    dni: dni || user.dni,
+                    telefono: telefono || user.telefono,
+                    fech_nacimiento: fech_nacimiento || user.fech_nacimiento,
+                    genero: genero || user.genero,
+                    updatedAt: new Date().toISOString(),
+                },
+                { new: true, runValidators: true }
+            );
+
+            return updatedUser;
         }
     },
 

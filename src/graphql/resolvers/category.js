@@ -11,6 +11,15 @@ module.exports = {
                 throw new UserInputError('Errors', { errors });
             };
 
+            const isCategory = await Category.findOne({ category });
+            if (isCategory) {
+                throw new UserInputError('Errors', {
+                    errors: {
+                        category: "Ya existe la categoria",
+                    }
+                })
+            }
+
             const newCategory = new Category({
                 category,
                 createdAt: new Date().toISOString(),
@@ -45,6 +54,20 @@ module.exports = {
                 throw new Error(error)
             }
         },
+
+        async deleteCategory(parent, { id }, context ) {
+            try {
+                const category = await Category.findOneAndDelete({ _id: id });
+                if (category) {
+                    return true
+                }
+                else {
+                    return false
+                }
+            } catch (error) {
+                throw new Error(error)
+            }
+        }
     },
 
     Query: {
