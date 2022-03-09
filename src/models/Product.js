@@ -45,8 +45,10 @@ const productSchema = new Schema({
     },
     medida: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Talla',
+            tallaId: {
+                type: Schema.Types.ObjectId,
+                ref: 'Talla',
+            },
             stock: Number,
             createdAt: String,
         }

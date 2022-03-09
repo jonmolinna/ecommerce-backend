@@ -2,19 +2,24 @@ const { UserInputError } = require('apollo-server');
 
 const { validateRegisterProduct } = require('../../util/validateProduct');
 const Product = require('../../models/Product');
-const Category = require('../../models/Category');
 
 module.exports = {
     Query: {
         async getAllProducts(parent, args, context){
             try {
                 const products = await Product.find();
-                console.log(">>>>>", parent);
                 return products;
             } catch (err) {
                 throw new Error('Error, Algo salio mal')
             }
         },
+        async getProductById(parent, { productId }, context) {
+            try {
+                return await Product.findById(productId);
+            } catch (error) {
+                throw new Error('Error, algo salio mal')
+            }
+        }
     },
 
     Mutation: {
@@ -50,6 +55,29 @@ module.exports = {
             } catch (error) {
                 console.log(error);
                 throw new Error('Error, Algo salio mal')
+            }
+        },
+        async addProductMedida(parent, {idProduct, input}, context) {
+            try {
+                const { tallaId, stock } = input;
+                const product = await Product.findByIdAndUpdate(
+                    { "_id":  idProduct},
+                    {
+                        $push: {
+                            medida: {
+                                tallaId,
+                                stock,
+                                createdAt: new Date().toISOString(),
+                            }
+                        }
+                    },
+                    { new: true, runValidators: true }
+                )
+
+                return product;
+            } catch (err) {
+                console.log(err);
+                throw new Error('Error, algo salio mal')
             }
         }
     },
