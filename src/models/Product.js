@@ -53,6 +53,10 @@ const productSchema = new Schema({
             createdAt: String,
         }
     ],
+    estado: {
+        type: Boolean,
+        default: true,
+    },
     createdAt: String,
 });
 

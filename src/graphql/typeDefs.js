@@ -7,6 +7,7 @@ module.exports = gql`
         getAllTallas: [Talla]
         getAllProducts: [Product]
         getProductById(productId: ID!): Product
+        getAllReviews: [Review]
     }
 
     type Mutation {
@@ -21,6 +22,8 @@ module.exports = gql`
         deletedTalla(id: ID!): Boolean!
         addProduct(input: AddProductInput!): Product!
         addProductMedida(idProduct: ID!, input: UpdatedProductMedidaInput!): Product!
+        addReview(input: AddReviewInput!): Review!
+        deleteReview(idReview: ID!): Boolean!
     }
 
     type User {
@@ -79,6 +82,15 @@ module.exports = gql`
         detalle: String
     }
 
+    type Review {
+        id: ID!,
+        title: String,
+        comment: String,
+        product: Product,
+        user: User,
+        createdAt: String,
+        updatedAt: String,
+    }
 
     input AddUserInput {
         nombre: String!
@@ -118,6 +130,13 @@ module.exports = gql`
     input UpdatedProductMedidaInput {
         tallaId: String!
         stock: Int!
+    }
+
+    input AddReviewInput {
+        title: String!,
+        comment: String!,
+        productId: String!,
+        userId: String!,
     }
     
 `;
