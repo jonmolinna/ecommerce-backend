@@ -10,7 +10,6 @@ module.exports.generateToken = (user) => {
             email: user.email,
         },
         SECRET_TOKEN,
-        { expiresIn: '24h'}
-
+        { expiresIn: '1d'}
     )
 };

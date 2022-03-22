@@ -6,8 +6,19 @@ const Product = require('../../models/Product');
 module.exports = {
     Query: {
         async getAllProducts(parent, args, context){
+            const { filter } = args;
+            let products;
+
             try {
-                const products = await Product.find();
+                products = await Product.find().sort({ createdAt: 'desc' });
+
+                if(filter) {
+                    const { genero } = filter;
+                    if (genero) {
+                        products = products.filter(product => product.genero === genero)
+                    }
+                }
+
                 return products;
             } catch (err) {
                 throw new Error('Error, Algo salio mal')

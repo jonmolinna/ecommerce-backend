@@ -1,9 +1,10 @@
-const { UserInputError } = require('apollo-server');
+const { UserInputError, AuthenticationError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 
 const User = require('../../models/User');
 const { generateToken } = require('../../util/generateToken');
 const { validateRegisterUser, validateLoginUser, validateUpdatedUser } = require('../../util/validatorsUser');
+const checkAuth = require('../../util/check-auth');
 
 module.exports = {
     Mutation: {
@@ -102,12 +103,15 @@ module.exports = {
 
     Query: {
         async getUser(parent, { userId }, context) {
+            const userToken = checkAuth(context);
+            
             try {
                 const user = await User.findById(userId);
-                if (user) {
+
+                if (String(user._id) === userToken.id) {
                     return user;
                 } else {
-                    throw new Error('Usuario no existe.');
+                    throw new AuthenticationError('Acción no permitida');
                 }
             } catch (err) {
                 throw new Error(err)

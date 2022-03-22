@@ -5,7 +5,7 @@ module.exports = gql`
         getUser(userId: ID!): User
         getAllCategory: [Category]
         getAllTallas: [Talla]
-        getAllProducts: [Product]
+        getAllProducts(filter: ProductsFilterInput): [Product]
         getProductById(productId: ID!): Product
         getAllReviews: [Review]
     }
@@ -137,6 +137,10 @@ module.exports = gql`
         comment: String!,
         productId: String!,
         userId: String!,
+    }
+
+    input ProductsFilterInput {
+        genero: String
     }
     
 `;
