@@ -117,6 +117,18 @@ module.exports.validateUpdatedUser = (nombre, apellido, dni, telefono, fech_naci
         }
     }
 
+    if (fech_nacimiento) {
+        let fecha = new Date(fech_nacimiento).getFullYear();
+        let ahora = new Date().getFullYear();
+        let edad = ahora - fecha;
+        if (edad <= 17) {
+            errors.fech_nacimiento = 'Ingrese una fecha mayor a 17 años';
+        }
+        else if (edad >= 120) {
+            errors.fech_nacimiento = 'Ingrese una fecha válida';
+        }
+    }
+
     return {
         errors,
         valid: Object.keys(errors).length < 1,

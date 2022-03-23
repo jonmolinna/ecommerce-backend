@@ -76,6 +76,7 @@ module.exports = {
 
         async updatedUser(parent, { id, input: {nombre, apellido, dni, telefono, fech_nacimiento, genero } }, context) {
             const { errors, valid } = validateUpdatedUser(nombre, apellido, dni, telefono, fech_nacimiento, genero);
+
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             };
@@ -83,21 +84,31 @@ module.exports = {
             const user = await User.findById(id);
             if (!user) throw new Error('Usuario no existe.');
 
-            const updatedUser = await User.findOneAndUpdate(
-                { _id: id},
-                {
-                    nombre: nombre || user.nombre,
-                    apellido: apellido || user.apellido,
-                    dni: dni || user.dni,
-                    telefono: telefono || user.telefono,
-                    fech_nacimiento: fech_nacimiento || user.fech_nacimiento,
-                    genero: genero || user.genero,
-                    updatedAt: new Date().toISOString(),
-                },
-                { new: true, runValidators: true }
-            );
+            const userToken = checkAuth(context);
 
-            return updatedUser;
+            if (id !== userToken.id) {
+                throw new AuthenticationError('Acción no permitida');
+            };
+
+            try {
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: id},
+                    {
+                        nombre: nombre || user.nombre,
+                        apellido: apellido || user.apellido,
+                        dni: dni || user.dni,
+                        telefono: telefono || user.telefono,
+                        fech_nacimiento: fech_nacimiento || user.fech_nacimiento,
+                        genero: genero || user.genero,
+                        updatedAt: new Date().toISOString(),
+                    },
+                    { new: true, runValidators: true }
+                );
+    
+                return updatedUser;
+            } catch (err) {
+                console.log(err);
+            }
         }
     },
 
