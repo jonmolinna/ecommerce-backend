@@ -27,7 +27,7 @@ module.exports = {
     Product: { // typeDefs => type product
         category: async (parent, args, context) => {
             const categoryId = parent.categoryId;
-            return await Category.findOne(categoryId)
+            return await Category.findById(categoryId)
         },
     },
     Medida: {

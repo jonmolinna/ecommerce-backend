@@ -11,14 +11,16 @@ module.exports = {
 
             try {
                 products = await Product.find().sort({ createdAt: 'desc' });
-
+                
                 if(filter) {
                     const { genero } = filter;
                     if (genero) {
                         products = products.filter(product => product.genero === genero)
                     }
+                } else {
+                    products = products.slice(0,6);
                 }
-
+                
                 return products;
             } catch (err) {
                 throw new Error('Error, Algo salio mal')
@@ -36,6 +38,8 @@ module.exports = {
     Mutation: {
         async addProduct(parent, { input }, context) {
             const { codigo, marca, descr, precio, material, color, urlImage, genero, detalles, categoryId} = input;
+
+            console.log('>>>>>>', categoryId);
 
             const { valid, errors} = validateRegisterProduct(codigo, marca, descr, precio, material, color, urlImage, genero, detalles, categoryId);
             if (!valid) {
@@ -58,6 +62,8 @@ module.exports = {
                 });
                 
                 const res = await newProduct.save();
+
+                console.log('>>>>>', res);
     
                 return {
                     ...res._doc,
